@@ -1,11 +1,12 @@
 require('dotenv').config();
 const app = require('../src/app');
+const connectDB = require('../src/config/db');
 
-module.exports = (req, res) => {
-  // Restore the original client request path on Vercel
-  const originalPath = req.headers['x-forwarded-url'] || req.headers['x-matched-path'];
-  if (originalPath) {
-    req.url = originalPath;
+module.exports = async (req, res) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('[Vercel DB Connection Error]:', err.message);
   }
   return app(req, res);
 };
